@@ -1,0 +1,31 @@
+{
+  "name": "codesharer",
+  "version": "1.0.0",
+  "description": "CodeSharing App BackEnd in Express/NodeJS",
+  "main": "app.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NDThacker/codesharerBackend.git"
+  },
+  "keywords": [
+    "CodeSharing",
+    "CodeSharer",
+    "CodeSnippet"
+  ],
+  "author": "Naman",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/NDThacker/codesharerBackend/issues"
+  },
+  "homepage": "https://github.com/NDThacker/codesharerBackend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.1",
+    "mongoose": "^5.7.1",
+    "morgan": "^1.9.1"
+  }
+}
