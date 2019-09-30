@@ -8,9 +8,9 @@ const morgan = require('morgan');
 const app = express();
 
 app.use(bdp.json());
-app.use(bdp.urlencoded({ urlencoded: true}));
+app.use(bdp.urlencoded({ extended: true}));
 app.use(helmet());
-app.use(morgan.combined())
+//app.use(morgan.tiny())
 app.use('/', router);
 app.use(errorlogger);
 

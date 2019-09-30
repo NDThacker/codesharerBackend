@@ -6,7 +6,8 @@ function errorlogger(err, req, res, next) {
 	})
 
 	if(err.status) {
-		res.status = err.status;
+		res.status(err.status);
+		// res.statusCode = err.status;
 	}
 	else {
 		res.status = 500;
