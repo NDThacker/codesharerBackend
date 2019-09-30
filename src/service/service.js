@@ -48,7 +48,7 @@ service.editSnippet = (sid, content) => {
 		if(sdata) return sdata;
 		else {
 			let error = new Error("Snippet cannot be saved");
-			error.status = 500;
+			error.status = 406;
 			throw error;
 		}
 	})

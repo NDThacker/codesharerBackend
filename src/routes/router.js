@@ -3,12 +3,27 @@ const router = express.Router();
 const sanitize = require('mongo-sanitize');
 const service = require('../service/service');
 
+
+
+/*get a snippet by url which is the id for snippets
+	route requires url for snippet as a route/request parameter
+	it returns the snippet if found
+	else with statuscode 404 returns error */
+	
 router.get('/getsnippetbyid/:id', (req, res, next) => {
 	let id = sanitize(req.params.id);
 	service.getSnippetById(id).then(sdata => {
 		res.json(sdata);
 	}).catch(err => next(err))
 })
+
+
+/*post a snippet 
+	req.body requires an object with  'visibility' which can either 'Public' or 'Private'
+	'content' which is plain text
+	'title' which can be multi phrased string to describe the snippet
+	new snippet's url is returned
+	else error is returned with statuscode 406 */
 
 router.post('/submitsnippet', (req, res, next) => {
 	//let snippet = sanitize(req.body);
@@ -17,6 +32,11 @@ router.post('/submitsnippet', (req, res, next) => {
 	}).catch(err => next(err))
 })
 
+/*get results of searching snippets by title
+	give title as a req params 
+	it can be multiphrased string
+	returns array of snippets if search phrase yielded any snippets
+	else returns an error with statuscode 404 */
 
 router.get('/searchsnippetbytitle/:title', (req, res, next) => {
 	let tle = sanitize(req.params.title);
@@ -24,6 +44,11 @@ router.get('/searchsnippetbytitle/:title', (req, res, next) => {
 		res.json(sarray);
 	}).catch(err => next(err))
 })
+
+
+/*put an edited snippet
+	requires url as req params and new content as req body
+	returns new updated snippet else returns an error with statuscode 406 */
 
 router.put('/editsnippet/:id', (req, res, next) => {
 	let sid = sanitize(req.params.id);
