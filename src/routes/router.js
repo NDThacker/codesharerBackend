@@ -22,6 +22,7 @@ router.get('/getsnippetbyid/:id', (req, res, next) => {
 	req.body requires an object with  'visibility' which can either 'Public' or 'Private'
 	'content' which is plain text
 	'title' which can be multi phrased string to describe the snippet
+	'expiryDate' which user will specify 
 	new snippet's url is returned
 	else error is returned with statuscode 406 */
 
