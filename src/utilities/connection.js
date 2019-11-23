@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 const connection = {};
-
+const dbUrl = 'mongodb://localhost:27017/snippetsdb';
 
 
 // let contentSchema = new Schema({
@@ -16,13 +16,14 @@ let snippetSchema = new Schema({
 	title: { type: String, required: true },
 	creationTime: { type: Date, default: new Date() },
 	modifiedTime: { type: Date, default: new Date() },
+	expiryTime: {type: Date, default: new Date() },
 	visibility: { type: String, enum: ['Public', 'Private'], default: 'Public' },
 	content: { type: String }
 }, { collection: 'CodeSnippet' });
 
 
 connection.getSnippetCollection = () => {
-	return mongoose.connect('mongodb://localhost:27017/snippetsdb', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(conn => {
+	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(conn => {
 		return conn.model('CodeSnippet', snippetSchema);
 	})
 

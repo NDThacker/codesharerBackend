@@ -40,7 +40,7 @@ model.searchSnippetByTitle = async (title) => {
 	let phrases = title.split(' ');
 	return connection.getSnippetCollection().then(db => {
 		for (let phrase of phrases)
-			await results.concat(db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }));
+			results.concat(db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }));
 		return results;
 	})
 }
