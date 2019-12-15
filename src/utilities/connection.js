@@ -16,7 +16,7 @@ let snippetSchema = new Schema({
 	title: { type: String, required: true },
 	creationTime: { type: Date, default: new Date() },
 	modifiedTime: { type: Date, default: new Date() },
-	expiryTime: {type: Date, default: new Date() },
+	expiryTime: { type: Date },
 	visibility: { type: String, enum: ['Public', 'Private'], default: 'Public' },
 	content: { type: String }
 }, { collection: 'CodeSnippet' });
