@@ -1,5 +1,5 @@
 const connection = require('../utilities/connection');
-const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "being", "by", "will", "is", "if"]
+const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "by", "will", "is", "if"];
 
 function generateNewId() {
 	let s = Math.random();
@@ -8,10 +8,19 @@ function generateNewId() {
 	return s;
 }
 
+async function searchByPhrase(phrase) {
 
+	return connection.getSnippetCollection().then(db => {
+		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }).then(rdata => {
+			if (rdata.length > 0)
+				return rdata;
+			else
+				return [];
+		})
+	})
+}
 
 const model = {};
-
 
 model.getSnippetById = (id) => {
 	return connection.getSnippetCollection().then(db => {
@@ -25,6 +34,10 @@ model.submitSnippet = (snippet) => {
 	return connection.getSnippetCollection().then(db => {
 		snippet.createTime = new Date();
 		snippet.modifiedTime = new Date();
+		snippet.expiryTime = new Date();
+		let months = snippet.expiryTime.getMonth();
+		months = months == 12 ? 1 : months + 1;
+		snippet.expiryTime.setMonth(months);
 		snippet._id = generateNewId();
 		return db.create(snippet).then(sdata => {
 			if (sdata) return sdata._id;
@@ -35,14 +48,30 @@ model.submitSnippet = (snippet) => {
 
 model.searchSnippetByTitle = async (title) => {
 	let results = [];
-	for (let sWord of stopWords)
-		title.replace(new RegExp("/" + sWord + "/gi"), '');
+	
+	for (let sword of stopWords)
+	{
+		sword = '\\W' + sword + '\\W';
+		title = title.replace(new RegExp(sword, 'gi'), ' ');
+	}
 	let phrases = title.split(' ');
-	return connection.getSnippetCollection().then(db => {
-		for (let phrase of phrases)
-			results.concat(db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }));
-		return results;
-	})
+	console.log(phrases)
+	let addedRes = []
+	let newRes = []
+	for (let phrase of phrases)
+	{	
+		newRes = await searchByPhrase(phrase);
+		newRes = newRes.filter(sp => {
+			if(!addedRes.includes(sp._id))
+				return true;
+			else return false;
+		})
+		results += newRes;
+		newRes.forEach(sp => {
+			addedRes.push(sp._id);
+		})
+	}
+	return results;
 }
 
 
