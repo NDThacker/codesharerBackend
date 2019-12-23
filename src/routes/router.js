@@ -56,7 +56,31 @@ router.put('/editsnippet/:id', (req, res, next) => {
 	let content = sanitize(req.body.content);
 	service.editSnippet(sid, content).then(sdata => {
 		res.json(sdata);
-	}).catch(err => next(err))
+	}).catch(err => next(err));
+})
+
+
+/*user sign up
+	require req body object email, name and password returns the same object back
+	else returns error with 406 status */
+
+router.post('/signup',(req, res, next) => {
+	let User = sanitize(req.body);
+	service.signUpUser(User).then(udata => {
+		res.json(udata);
+	}).catch(err => next(err));
+})
+
+
+/*post request for logging in
+	require req body object with email and password
+	return user data if creds are true, else 406 error */
+	
+router.post('/login', (req, res, next) => {
+	let creds = sanitize(req.body);
+	service.logInUser(creds).then(udata => {
+		res.json(udata);
+	}).catch(err => next(err));
 })
 
 module.exports = router;

@@ -54,4 +54,27 @@ service.editSnippet = (sid, content) => {
 	})
 }
 
+
+service.signUpUser = (User) => {
+	return model.signUpUser(User).then(udata => {
+		if(udata) return udata;
+		else {
+			let error = new Error("Signing up failed");
+			error.status = 406;
+			throw error;
+		}
+	})
+}
+
+service.logInUser = (creds) => {
+	return model.logInUser(creds.email, creds.password).then(udata => {
+		if(udata) return udata;
+		else {
+			let error = new Error("Email or Password incorrect");
+			error.status = 406;
+			throw error;
+		}
+	})
+}
+
 module.exports = service;

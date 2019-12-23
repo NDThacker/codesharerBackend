@@ -1,4 +1,6 @@
 const connection = require('../utilities/connection');
+const NewSnippet = require('./NewSnippet');
+const NewUser = require('./NewUser');
 const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "by", "will", "is", "if"];
 
 function generateNewId() {
@@ -30,14 +32,9 @@ model.getSnippetById = (id) => {
 	})
 }
 
-model.submitSnippet = (snippet) => {
+model.submitSnippet = (snp) => {
 	return connection.getSnippetCollection().then(db => {
-		snippet.createTime = new Date();
-		snippet.modifiedTime = new Date();
-		snippet.expiryTime = new Date();
-		let months = snippet.expiryTime.getMonth();
-		months = months == 12 ? 1 : months + 1;
-		snippet.expiryTime.setMonth(months);
+		let snippet = new NewSnippet(snp);
 		snippet._id = generateNewId();
 		return db.create(snippet).then(sdata => {
 			if (sdata) return sdata._id;
@@ -79,6 +76,27 @@ model.editSnippet = (sid, content) => {
 	return connection.getSnippetCollection().then(db => {
 		return db.findByIdAndUpdate(sid, { $set: { modifiedTime: new Date(), content: content } }, { new: true }).then(sdata => {
 			return sdata;
+		})
+	})
+}
+
+
+model.signUpUser = (User) => {
+	let newUser = new NewUser(User);
+	return connection.getUserCollection().then(db => {
+		return db.create(newUser).then(udata => {
+			if(udata) return udata;
+			else return null;
+		})
+	})
+}
+
+model.logInUser = (email, password) => {
+	return connection.getUserCollection().then(db => {
+		return db.findById(email).then(udata => {
+			if(udata.password == password)
+				return udata;
+			else return null;
 		})
 	})
 }
