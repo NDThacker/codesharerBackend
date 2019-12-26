@@ -14,7 +14,8 @@ const dbUrl = 'mongodb://localhost:27017/snippetsdb';
 let userSchema = new Schema({
 	_id: { type: String, required: true },
 	password: { type: String, required: true },
-	name: { type: String, required: true }
+	name: { type: String, required: true },
+	starred: { type: [String], default: [] }
 }, { collection: 'Users' });
 
 

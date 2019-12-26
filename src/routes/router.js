@@ -74,7 +74,7 @@ router.post('/signup',(req, res, next) => {
 
 /*post request for logging in
 	require req body object with email and password
-	return user data if creds are true, else 406 error */
+	return user data if creds are valid, else 406 error */
 	
 router.post('/login', (req, res, next) => {
 	let creds = sanitize(req.body);

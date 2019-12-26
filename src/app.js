@@ -10,7 +10,7 @@ const app = express();
 app.use(bdp.json());
 app.use(bdp.urlencoded({ extended: true}));
 app.use(helmet());
-//app.use(morgan.tiny())
+app.use(morgan('common'));
 app.use('/', router);
 app.use(errorlogger);
 
