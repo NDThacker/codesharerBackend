@@ -33,6 +33,15 @@ router.post('/submitsnippet', (req, res, next) => {
 	}).catch(err => next(err))
 })
 
+/* adding snippet into the user's collection
+	req.body must be as same assubmiting snippet as above */
+
+router.put('/submitsnippettouser', (req, res, next) => {
+	service.submitSnippetToUser(req.body.sinppet, req.body.email).then(udata => {
+		res.json(udata);
+	}).catch(err => next(err))
+})
+
 /*get results of searching snippets by title
 	give title as a req params 
 	it can be multiphrased string

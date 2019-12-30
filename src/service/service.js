@@ -1,5 +1,4 @@
 const model = require('../model/model');
-const NewSnippet = require('../model/NewSnippet');
 
 
 const service = {};
@@ -17,9 +16,20 @@ service.getSnippetById = (id) => {
 	})
 }
 
+service.submitSnippetToUser = (snippet, email) => {
+	return model.submitSnippetToUser(snippet, snippet._id, email).then(udata => {
+		if(udata) return udata;
+		else {
+			let err = new Error("Can't submit new snippet");
+			err.status = 406;
+			throw err;
+		}
+	})
+}
+
+
 service.submitSnippet = (snippet) => {
-	let newSnippet = new NewSnippet(snippet);
-	return model.submitSnippet(newSnippet).then(sid => {
+	return model.submitSnippet(snippet).then(sid => {
 		if(sid) return sid;
 		else {
 			let error = new Error("Cannot post snippet");

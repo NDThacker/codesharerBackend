@@ -13,7 +13,7 @@ function generateNewId() {
 async function searchByPhrase(phrase) {
 
 	return connection.getSnippetCollection().then(db => {
-		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }).then(rdata => {
+		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: "Public" }).then(rdata => {
 			if (rdata.length > 0)
 				return rdata;
 			else
@@ -38,6 +38,17 @@ model.submitSnippet = (snp) => {
 		snippet._id = generateNewId();
 		return db.create(snippet).then(sdata => {
 			if (sdata) return sdata._id;
+			else return null;
+		})
+	})
+}
+
+model.submitSnippetToUser = (snp, sid, email) => {
+	return connection.getUserCollection().then(db => {
+		let snippet = new NewSnippet(snp);
+		snippet._id = sid;
+		return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true } ).then(udata => {
+			if(udata) return udata;
 			else return null;
 		})
 	})

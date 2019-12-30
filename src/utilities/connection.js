@@ -11,14 +11,6 @@ const dbUrl = 'mongodb://localhost:27017/snippetsdb';
 // 	css: { type: String }
 // })
 
-let userSchema = new Schema({
-	_id: { type: String, required: true },
-	password: { type: String, required: true },
-	name: { type: String, required: true },
-	starred: { type: [String], default: [] }
-}, { collection: 'Users' });
-
-
 let snippetSchema = new Schema({
 	_id: { type: String },
 	title: { type: String, required: true },
@@ -30,6 +22,13 @@ let snippetSchema = new Schema({
 	content: { type: String }
 }, { collection: 'CodeSnippet' });
 
+let userSchema = new Schema({
+	_id: { type: String, required: true },
+	password: { type: String, required: true },
+	name: { type: String, required: true },
+	starred: { type: [snippetSchema], default: [] },
+	created: { type: [snippetSchema], default: [] }
+}, { collection: 'Users' });
 
 connection.getUserCollection = () => {
 	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(conn => {
