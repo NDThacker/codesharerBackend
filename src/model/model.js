@@ -47,8 +47,8 @@ model.submitSnippetToUser = (snp, sid, email) => {
 	return connection.getUserCollection().then(db => {
 		let snippet = new NewSnippet(snp);
 		snippet._id = sid;
-		return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true } ).then(udata => {
-			if(udata) return udata;
+		return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true }).then(udata => {
+			if (udata) return udata;
 			else return null;
 		})
 	})
@@ -56,9 +56,8 @@ model.submitSnippetToUser = (snp, sid, email) => {
 
 model.searchSnippetByTitle = async (title) => {
 	let results = [];
-	
-	for (let sword of stopWords)
-	{
+
+	for (let sword of stopWords) {
 		sword = '\\W' + sword + '\\W';
 		title = title.replace(new RegExp(sword, 'gi'), ' ');
 	}
@@ -66,11 +65,10 @@ model.searchSnippetByTitle = async (title) => {
 	console.log(phrases)
 	let addedRes = []
 	let newRes = []
-	for (let phrase of phrases)
-	{	
+	for (let phrase of phrases) {
 		newRes = await searchByPhrase(phrase);
 		newRes = newRes.filter(sp => {
-			if(!addedRes.includes(sp._id))
+			if (!addedRes.includes(sp._id))
 				return true;
 			else return false;
 		})
@@ -96,7 +94,7 @@ model.signUpUser = (User) => {
 	let newUser = new NewUser(User);
 	return connection.getUserCollection().then(db => {
 		return db.create(newUser).then(udata => {
-			if(udata) return udata;
+			if (udata) return udata;
 			else return null;
 		})
 	})
@@ -105,8 +103,19 @@ model.signUpUser = (User) => {
 model.logInUser = (email, password) => {
 	return connection.getUserCollection().then(db => {
 		return db.findById(email).then(udata => {
-			if(udata.password == password)
+			if (udata.password == password) {
+				delete udata.password;
 				return udata;
+			}
+			else return null;
+		})
+	})
+}
+
+model.addStarredSnippet = (email, snippet) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $push: { starred: snippet } }, { select: starred }).then(starred => {
+			if(starred) return starred;
 			else return null;
 		})
 	})

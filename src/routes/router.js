@@ -92,4 +92,11 @@ router.post('/login', (req, res, next) => {
 	}).catch(err => next(err));
 })
 
+
+router.put('/addstarredsnippet', (req, res, next) => {
+	service.addStarredSnippet(req.body.email, req.body.snippet).then(starred => {
+		res.json(starred);
+	}).catch(err => next(err));
+})
+
 module.exports = router;

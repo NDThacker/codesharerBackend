@@ -16,6 +16,17 @@ service.getSnippetById = (id) => {
 	})
 }
 
+service.addStarredSnippet = (email, snippet) => {
+	return model.addStarredSnippet(email, snippet).then(starred => {
+		if(starred) return starred;
+		else {
+			let err = new Error("Can't add star.!");
+			err.status = 406;
+			throw err;
+		}
+	})
+}
+
 service.submitSnippetToUser = (snippet, email) => {
 	return model.submitSnippetToUser(snippet, snippet._id, email).then(udata => {
 		if(udata) return udata;
