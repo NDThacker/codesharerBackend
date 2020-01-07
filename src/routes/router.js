@@ -37,8 +37,8 @@ router.post('/submitsnippet', (req, res, next) => {
 	req.body must be as same assubmiting snippet as above */
 
 router.put('/submitsnippettouser', (req, res, next) => {
-	service.submitSnippetToUser(req.body.sinppet, req.body.email).then(udata => {
-		res.json(udata);
+	service.submitSnippetToUser(req.body.sinppet, req.body.email).then(status => {
+		res.json(status);
 	}).catch(err => next(err))
 })
 
@@ -75,8 +75,8 @@ router.put('/editsnippet/:id', (req, res, next) => {
 
 router.post('/signup',(req, res, next) => {
 	let User = sanitize(req.body);
-	service.signUpUser(User).then(udata => {
-		res.json(udata);
+	service.signUpUser(User).then(status => {
+		res.json(status);
 	}).catch(err => next(err));
 })
 
@@ -86,6 +86,7 @@ router.post('/signup',(req, res, next) => {
 	return user data if creds are valid, else 406 error */
 	
 router.post('/login', (req, res, next) => {
+	console.log(req.body);
 	let creds = sanitize(req.body);
 	service.logInUser(creds).then(udata => {
 		res.json(udata);
@@ -98,5 +99,18 @@ router.put('/addstarredsnippet', (req, res, next) => {
 		res.json(starred);
 	}).catch(err => next(err));
 })
+
+router.put('/updatestarredinuser', (req, res, next) => {
+	service.updateStarredInUser(req.body.starred, req.body.email).then(status => {
+		res.json(status);
+	}).catch(err => next(err));
+})
+
+router.put('/updatecreatedinuser', (req, res, next) => {
+	service.updateCreatedInUser(req.body.created, req.body.email).then(status => {
+		res.json(status);
+	}).catch(err => next(err));
+})
+
 
 module.exports = router;

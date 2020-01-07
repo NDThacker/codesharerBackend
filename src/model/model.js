@@ -48,7 +48,7 @@ model.submitSnippetToUser = (snp, sid, email) => {
 		let snippet = new NewSnippet(snp);
 		snippet._id = sid;
 		return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true }).then(udata => {
-			if (udata) return udata;
+			if (udata) return true;
 			else return null;
 		})
 	})
@@ -94,7 +94,10 @@ model.signUpUser = (User) => {
 	let newUser = new NewUser(User);
 	return connection.getUserCollection().then(db => {
 		return db.create(newUser).then(udata => {
-			if (udata) return udata;
+			if (udata) {
+				return true;
+			}
+			
 			else return null;
 		})
 	})
@@ -103,7 +106,7 @@ model.signUpUser = (User) => {
 model.logInUser = (email, password) => {
 	return connection.getUserCollection().then(db => {
 		return db.findById(email).then(udata => {
-			if (udata.password == password) {
+			if (udata && udata.password == password) {
 				delete udata.password;
 				return udata;
 			}
@@ -121,4 +124,22 @@ model.addStarredSnippet = (email, snippet) => {
 	})
 }
 
+
+model.updateStarredInUser = (starred, email) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $set: { starred: starred } }, { select: starred }).then(starred => {
+			if(starred) return true;
+			else return null;
+		})
+	})
+}
+
+model.updateCreatedInUser = (created, email) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $set: { created: created } }, { select: created }).then(created => {
+			if(created) return true;
+			else return null;
+		})
+	})
+}
 module.exports = model;

@@ -28,8 +28,8 @@ service.addStarredSnippet = (email, snippet) => {
 }
 
 service.submitSnippetToUser = (snippet, email) => {
-	return model.submitSnippetToUser(snippet, snippet._id, email).then(udata => {
-		if(udata) return udata;
+	return model.submitSnippetToUser(snippet, snippet._id, email).then(status => {
+		if(status) return status;
 		else {
 			let err = new Error("Can't submit new snippet");
 			err.status = 406;
@@ -77,11 +77,33 @@ service.editSnippet = (sid, content) => {
 
 
 service.signUpUser = (User) => {
-	return model.signUpUser(User).then(udata => {
-		if(udata) return udata;
+	return model.signUpUser(User).then(status => {
+		if(status) return status;
 		else {
 			let error = new Error("Signing up failed");
 			error.status = 406;
+			throw error;
+		}
+	})
+}
+
+service.updateStarredInUser = (starred, email) => {
+	return model.updateStarredInUser(starred, email).then(status => {
+		if(status) return true;
+		else {
+			let error = new Error("Cannot update starred snippets");
+			error.status = 501;
+			throw error;
+		}
+	})
+}
+
+service.updateCreatedInUser = (created, email) => {
+	return model.updateCreatedInUser(created, email).then(status => {
+		if(status) return true;
+		else {
+			let error = new Error("Cannot update created snippets");
+			error.status = 501;
 			throw error;
 		}
 	})
