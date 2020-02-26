@@ -14,8 +14,9 @@ async function searchByPhrase(phrase) {
 
 	return connection.getSnippetCollection().then(db => {
 		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: "Public" }).then(rdata => {
-			if (rdata.length > 0)
+			if (rdata.length > 0) {
 				return rdata;
+			}
 			else
 				return [];
 		})
@@ -72,7 +73,7 @@ model.searchSnippetByTitle = async (title) => {
 				return true;
 			else return false;
 		})
-		results += newRes;
+		results.push(newRes);
 		newRes.forEach(sp => {
 			addedRes.push(sp._id);
 		})
@@ -97,7 +98,7 @@ model.signUpUser = (User) => {
 			if (udata) {
 				return true;
 			}
-			
+
 			else return null;
 		})
 	})
@@ -118,7 +119,7 @@ model.logInUser = (email, password) => {
 model.addStarredSnippet = (email, snippet) => {
 	return connection.getUserCollection().then(db => {
 		return db.findByIdAndUpdate(email, { $push: { starred: snippet } }, { select: starred }).then(starred => {
-			if(starred) return starred;
+			if (starred) return starred;
 			else return null;
 		})
 	})
@@ -128,7 +129,7 @@ model.addStarredSnippet = (email, snippet) => {
 model.updateStarredInUser = (starred, email) => {
 	return connection.getUserCollection().then(db => {
 		return db.findByIdAndUpdate(email, { $set: { starred: starred } }, { select: starred }).then(starred => {
-			if(starred) return true;
+			if (starred) return true;
 			else return null;
 		})
 	})
@@ -137,7 +138,7 @@ model.updateStarredInUser = (starred, email) => {
 model.updateCreatedInUser = (created, email) => {
 	return connection.getUserCollection().then(db => {
 		return db.findByIdAndUpdate(email, { $set: { created: created } }, { select: created }).then(created => {
-			if(created) return true;
+			if (created) return true;
 			else return null;
 		})
 	})
