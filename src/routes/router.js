@@ -34,10 +34,10 @@ router.post('/submitsnippet', (req, res, next) => {
 })
 
 /* adding snippet into the user's collection
-	req.body must be as same assubmiting snippet as above */
+	req.body must be having sid and logged in emailid */
 
 router.put('/submitsnippettouser', (req, res, next) => {
-	service.submitSnippetToUser(req.body.sinppet, req.body.email).then(status => {
+	service.submitSnippetToUser(req.body.sid, req.body.email).then(status => {
 		res.json(status);
 	}).catch(err => next(err))
 })
@@ -95,7 +95,7 @@ router.post('/login', (req, res, next) => {
 
 
 router.put('/addstarredsnippet', (req, res, next) => {
-	service.addStarredSnippet(req.body.email, req.body.snippet).then(starred => {
+	service.addStarredSnippet(req.body.email, req.body.sid).then(starred => {
 		res.json(starred);
 	}).catch(err => next(err));
 })

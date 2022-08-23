@@ -44,13 +44,13 @@ model.submitSnippet = (snp) => {
 	})
 }
 
-model.submitSnippetToUser = (snp, sid, email) => {
+model.submitSnippetToUser = (sid, email) => {
 	return connection.getUserCollection().then(db => {
-		let snippet = new NewSnippet(snp);
-		snippet._id = sid;
-		return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true }).then(udata => {
-			if (udata) return true;
-			else return null;
+		return model.getSnippetById(sid).then(snp => {
+			return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true }).then(udata => {
+				if (udata) return true;
+				else return null;
+			})
 		})
 	})
 }
@@ -116,15 +116,16 @@ model.logInUser = (email, password) => {
 	})
 }
 
-model.addStarredSnippet = (email, snippet) => {
+model.addStarredSnippet = (email, sid) => {
 	return connection.getUserCollection().then(db => {
-		return db.findByIdAndUpdate(email, { $push: { starred: snippet } }, { select: starred }).then(starred => {
-			if (starred) return starred;
-			else return null;
+		return model.getSnippetById(sid).then(snp => {
+			return db.findByIdAndUpdate(email, { $push: { starred: snp } }, { new: true }).then(udata => { //{ select: starred }
+				if (udata) return udata.starred;
+				else return null;
+			})
 		})
 	})
 }
-
 
 model.updateStarredInUser = (starred, email) => {
 	return connection.getUserCollection().then(db => {
