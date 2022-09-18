@@ -81,7 +81,7 @@ model.searchSnippetByTitle = async (title) => {
 	return results;
 }
 
-
+//will be improved later
 model.editSnippet = (sid, content) => {
 	return connection.getSnippetCollection().then(db => {
 		return db.findByIdAndUpdate(sid, { $set: { modifiedTime: new Date(), content: content } }, { new: true }).then(sdata => {

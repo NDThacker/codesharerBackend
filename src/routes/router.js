@@ -86,7 +86,7 @@ router.post('/signup',(req, res, next) => {
 	return user data if creds are valid, else 406 error */
 	
 router.post('/login', (req, res, next) => {
-	console.log(req.body);
+	// console.log(req.body);
 	let creds = sanitize(req.body);
 	service.logInUser(creds).then(udata => {
 		res.json(udata);
