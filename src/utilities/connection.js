@@ -5,12 +5,6 @@ const connection = {};
 const dbUrl = 'mongodb://localhost:27017/snippetsdb';
 
 
-// let contentSchema = new Schema({
-// 	html: { type: String },
-// 	js: { type: String },
-// 	css: { type: String }
-// })
-
 let snippetSchema = new Schema({
 	_id: { type: String },
 	title: { type: String, required: true },
@@ -26,8 +20,8 @@ let userSchema = new Schema({
 	_id: { type: String, required: true },
 	password: { type: String, required: true },
 	name: { type: String, required: true },
-	starred: { type: [snippetSchema], default: [] },
-	created: { type: [snippetSchema], default: [] }
+	starred: { type: [String], default: [] },
+	created: { type: [String], default: [] }
 }, { collection: 'Users' });
 
 connection.getUserCollection = () => {

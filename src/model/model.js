@@ -44,20 +44,20 @@ model.submitSnippet = (snp) => {
 	})
 }
 
+
 model.submitSnippetToUser = (sid, email) => {
 	return connection.getUserCollection().then(db => {
-		return model.getSnippetById(sid).then(snp => {
-			return db.findByIdAndUpdate(email, { $push: { created: snp } }, { new: true }).then(udata => {
-				if (udata) return true;
-				else return null;
-			})
+		return db.findByIdAndUpdate(email, { $push: { created: sid } }, { new: true }).then(udata => {
+			if (udata) return true;
+			else return null;
 		})
 	})
 }
 
-model.searchSnippetByTitle = async (title) => {
-	let results = [];
 
+model.searchSnippetByTitle = async (title) => {
+	
+	let results = [];
 	for (let sword of stopWords) {
 		sword = '\\W' + sword + '\\W';
 		title = title.replace(new RegExp(sword, 'gi'), ' ');
@@ -108,7 +108,7 @@ model.logInUser = (email, password) => {
 	return connection.getUserCollection().then(db => {
 		return db.findById(email).then(udata => {
 			if (udata && udata.password == password) {
-				delete udata.password;
+				udata.password = "______";
 				return udata;
 			}
 			else return null;
@@ -118,11 +118,9 @@ model.logInUser = (email, password) => {
 
 model.addStarredSnippet = (email, sid) => {
 	return connection.getUserCollection().then(db => {
-		return model.getSnippetById(sid).then(snp => {
-			return db.findByIdAndUpdate(email, { $push: { starred: snp } }, { new: true }).then(udata => { //{ select: starred }
-				if (udata) return udata.starred;
-				else return null;
-			})
+		return db.findByIdAndUpdate(email, { $push: { starred: sid } }, { new: true }).then(udata => { //{ select: starred }
+			if (udata) return udata.starred;
+			else return null;
 		})
 	})
 }
