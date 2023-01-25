@@ -1,11 +1,16 @@
 class NewSnippet {
 	constructor(obj) {
-		this.visibility = obj.visibility;
+		//this.visibility = obj.visibility;
 		this.content = obj.content;
 		this.title = obj.title;
-		// this.content.html = obj.html;
-		// this.content.css = obj.css;
-		// this.content.js = obj.js;
+		this.author = obj.author;
+		this.createTime = new Date();
+		this.modifiedTime = new Date();
+		this.expiryTime = new Date(obj.expiryTime);
+		// let months = obj.expiryTime.getMonth();
+		// months = months == 12 ? 1 : months + 1;
+		// this.expiryTime.setMonth(months);
+
 	}
 }
 

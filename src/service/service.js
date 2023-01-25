@@ -1,5 +1,4 @@
 const model = require('../model/model');
-const NewSnippet = require('../model/NewSnippet');
 
 
 const service = {};
@@ -17,9 +16,31 @@ service.getSnippetById = (id) => {
 	})
 }
 
+service.addStarredSnippet = (email, sid) => {
+	return model.addStarredSnippet(email, sid).then(starred => {
+		if(starred) return starred;
+		else {
+			let err = new Error("Can't add star.!");
+			err.status = 406;
+			throw err;
+		}
+	})
+}
+
+service.submitSnippetToUser = (sid, email) => {
+	return model.submitSnippetToUser(sid, email).then(status => {
+		if(status) return status;
+		else {
+			let err = new Error("Can't submit new snippet");
+			err.status = 406;
+			throw err;
+		}
+	})
+}
+
+
 service.submitSnippet = (snippet) => {
-	let newSnippet = new NewSnippet(snippet);
-	return model.submitSnippet(newSnippet).then(sid => {
+	return model.submitSnippet(snippet).then(sid => {
 		if(sid) return sid;
 		else {
 			let error = new Error("Cannot post snippet");
@@ -48,6 +69,51 @@ service.editSnippet = (sid, content) => {
 		if(sdata) return sdata;
 		else {
 			let error = new Error("Snippet cannot be saved");
+			error.status = 406;
+			throw error;
+		}
+	})
+}
+
+
+service.signUpUser = (User) => {
+	return model.signUpUser(User).then(status => {
+		if(status) return status;
+		else {
+			let error = new Error("Signing up failed");
+			error.status = 406;
+			throw error;
+		}
+	})
+}
+
+service.updateStarredInUser = (starred, email) => {
+	return model.updateStarredInUser(starred, email).then(status => {
+		if(status) return true;
+		else {
+			let error = new Error("Cannot update starred snippets");
+			error.status = 501;
+			throw error;
+		}
+	})
+}
+
+service.updateCreatedInUser = (created, email) => {
+	return model.updateCreatedInUser(created, email).then(status => {
+		if(status) return true;
+		else {
+			let error = new Error("Cannot update created snippets");
+			error.status = 501;
+			throw error;
+		}
+	})
+}
+
+service.logInUser = (creds) => {
+	return model.logInUser(creds.email, creds.password).then(udata => {
+		if(udata) return udata;
+		else {
+			let error = new Error("Email or Password incorrect");
 			error.status = 406;
 			throw error;
 		}

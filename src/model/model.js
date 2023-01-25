@@ -1,4 +1,6 @@
 const connection = require('../utilities/connection');
+const NewSnippet = require('./NewSnippet');
+const NewUser = require('./NewUser');
 const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "by", "will", "is", "if"];
 
 function generateNewId() {
@@ -11,9 +13,10 @@ function generateNewId() {
 async function searchByPhrase(phrase) {
 
 	return connection.getSnippetCollection().then(db => {
-		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: 'Public' }).then(rdata => {
-			if (rdata.length > 0)
+		return db.find({ title: { $regex: new RegExp(phrase), $options: 'sxi' }, visibility: "Public" }).then(rdata => {
+			if (rdata.length > 0) {
 				return rdata;
+			}
 			else
 				return [];
 		})
@@ -30,14 +33,9 @@ model.getSnippetById = (id) => {
 	})
 }
 
-model.submitSnippet = (snippet) => {
+model.submitSnippet = (snp) => {
 	return connection.getSnippetCollection().then(db => {
-		snippet.createTime = new Date();
-		snippet.modifiedTime = new Date();
-		snippet.expiryTime = new Date();
-		let months = snippet.expiryTime.getMonth();
-		months = months == 12 ? 1 : months + 1;
-		snippet.expiryTime.setMonth(months);
+		let snippet = new NewSnippet(snp);
 		snippet._id = generateNewId();
 		return db.create(snippet).then(sdata => {
 			if (sdata) return sdata._id;
@@ -46,11 +44,21 @@ model.submitSnippet = (snippet) => {
 	})
 }
 
+
+model.submitSnippetToUser = (sid, email) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $push: { created: sid } }, { new: true }).then(udata => {
+			if (udata) return true;
+			else return null;
+		})
+	})
+}
+
+
 model.searchSnippetByTitle = async (title) => {
-	let results = [];
 	
-	for (let sword of stopWords)
-	{
+	let results = [];
+	for (let sword of stopWords) {
 		sword = '\\W' + sword + '\\W';
 		title = title.replace(new RegExp(sword, 'gi'), ' ');
 	}
@@ -58,15 +66,14 @@ model.searchSnippetByTitle = async (title) => {
 	console.log(phrases)
 	let addedRes = []
 	let newRes = []
-	for (let phrase of phrases)
-	{	
+	for (let phrase of phrases) {
 		newRes = await searchByPhrase(phrase);
 		newRes = newRes.filter(sp => {
-			if(!addedRes.includes(sp._id))
+			if (!addedRes.includes(sp._id))
 				return true;
 			else return false;
 		})
-		results += newRes;
+		results.push(newRes);
 		newRes.forEach(sp => {
 			addedRes.push(sp._id);
 		})
@@ -74,7 +81,7 @@ model.searchSnippetByTitle = async (title) => {
 	return results;
 }
 
-
+//will be improved later
 model.editSnippet = (sid, content) => {
 	return connection.getSnippetCollection().then(db => {
 		return db.findByIdAndUpdate(sid, { $set: { modifiedTime: new Date(), content: content } }, { new: true }).then(sdata => {
@@ -83,4 +90,56 @@ model.editSnippet = (sid, content) => {
 	})
 }
 
+
+model.signUpUser = (User) => {
+	let newUser = new NewUser(User);
+	return connection.getUserCollection().then(db => {
+		return db.create(newUser).then(udata => {
+			if (udata) {
+				return true;
+			}
+
+			else return null;
+		})
+	})
+}
+
+model.logInUser = (email, password) => {
+	return connection.getUserCollection().then(db => {
+		return db.findById(email).then(udata => {
+			if (udata && udata.password == password) {
+				udata.password = "______";
+				return udata;
+			}
+			else return null;
+		})
+	})
+}
+
+model.addStarredSnippet = (email, sid) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $push: { starred: sid } }, { new: true }).then(udata => { //{ select: starred }
+			if (udata) return udata.starred;
+			else return null;
+		})
+	})
+}
+
+model.updateStarredInUser = (starred, email) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $set: { starred: starred } }, { select: starred }).then(starred => {
+			if (starred) return true;
+			else return null;
+		})
+	})
+}
+
+model.updateCreatedInUser = (created, email) => {
+	return connection.getUserCollection().then(db => {
+		return db.findByIdAndUpdate(email, { $set: { created: created } }, { select: created }).then(created => {
+			if (created) return true;
+			else return null;
+		})
+	})
+}
 module.exports = model;

@@ -33,6 +33,15 @@ router.post('/submitsnippet', (req, res, next) => {
 	}).catch(err => next(err))
 })
 
+/* adding snippet into the user's collection
+	req.body must be having sid and logged in emailid */
+
+router.put('/submitsnippettouser', (req, res, next) => {
+	service.submitSnippetToUser(req.body.sid, req.body.email).then(status => {
+		res.json(status);
+	}).catch(err => next(err))
+})
+
 /*get results of searching snippets by title
 	give title as a req params 
 	it can be multiphrased string
@@ -56,7 +65,52 @@ router.put('/editsnippet/:id', (req, res, next) => {
 	let content = sanitize(req.body.content);
 	service.editSnippet(sid, content).then(sdata => {
 		res.json(sdata);
-	}).catch(err => next(err))
+	}).catch(err => next(err));
 })
+
+
+/*user sign up
+	require req body object email, name and password returns the same object back
+	else returns error with 406 status */
+
+router.post('/signup',(req, res, next) => {
+	let User = sanitize(req.body);
+	service.signUpUser(User).then(status => {
+		res.json(status);
+	}).catch(err => next(err));
+})
+
+
+/*post request for logging in
+	require req body object with email and password
+	return user data if creds are valid, else 406 error */
+	
+router.post('/login', (req, res, next) => {
+	// console.log(req.body);
+	let creds = sanitize(req.body);
+	service.logInUser(creds).then(udata => {
+		res.json(udata);
+	}).catch(err => next(err));
+})
+
+
+router.put('/addstarredsnippet', (req, res, next) => {
+	service.addStarredSnippet(req.body.email, req.body.sid).then(starred => {
+		res.json(starred);
+	}).catch(err => next(err));
+})
+
+router.put('/updatestarredinuser', (req, res, next) => {
+	service.updateStarredInUser(req.body.starred, req.body.email).then(status => {
+		res.json(status);
+	}).catch(err => next(err));
+})
+
+router.put('/updatecreatedinuser', (req, res, next) => {
+	service.updateCreatedInUser(req.body.created, req.body.email).then(status => {
+		res.json(status);
+	}).catch(err => next(err));
+})
+
 
 module.exports = router;
