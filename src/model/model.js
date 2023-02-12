@@ -127,8 +127,8 @@ model.addStarredSnippet = (email, sid) => {
 
 model.updateStarredInUser = (starred, email) => {
 	return connection.getUserCollection().then(db => {
-		return db.findByIdAndUpdate(email, { $set: { starred: starred } }, { select: starred }).then(starred => {
-			if (starred) return true;
+		return db.findByIdAndUpdate(email, { $set: { starred: starred } }).then(status => {
+			if (status.nModified == 1) return true;
 			else return null;
 		})
 	})
@@ -136,8 +136,8 @@ model.updateStarredInUser = (starred, email) => {
 
 model.updateCreatedInUser = (created, email) => {
 	return connection.getUserCollection().then(db => {
-		return db.findByIdAndUpdate(email, { $set: { created: created } }, { select: created }).then(created => {
-			if (created) return true;
+		return db.findByIdAndUpdate(email, { $set: { created: created } }).then(status => {
+			if (status.nModified == 1) return true;
 			else return null;
 		})
 	})
