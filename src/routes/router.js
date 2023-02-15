@@ -112,5 +112,10 @@ router.put('/updatecreatedinuser', (req, res, next) => {
 	}).catch(err => next(err));
 })
 
+router.get('/getrecentsnippets', (req, res, next) => {
+	service.getRecentSnippets().then(retList => {
+		res.json(retList);
+	}).catch(err => next(err));
+})
 
 module.exports = router;

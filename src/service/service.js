@@ -120,4 +120,15 @@ service.logInUser = (creds) => {
 	})
 }
 
+service.getRecentSnippets = () => {
+	return model.getRecentSnippets().then(retList => {
+		if(retList) return retList;
+		else{
+			let error = new Error("Cannot retrieve Recent Snippets");
+			error.status = 501;
+			throw error;
+		}
+	})
+}
+
 module.exports = service;
