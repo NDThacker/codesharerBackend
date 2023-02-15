@@ -1,3 +1,4 @@
+const { getSnippetCollection } = require('../utilities/connection');
 const connection = require('../utilities/connection');
 const NewSnippet = require('./NewSnippet');
 const NewUser = require('./NewUser');
@@ -73,7 +74,7 @@ model.searchSnippetByTitle = async (title) => {
 				return true;
 			else return false;
 		})
-		results.push(newRes);
+		results = results.concat(newRes);
 		newRes.forEach(sp => {
 			addedRes.push(sp._id);
 		})
@@ -116,6 +117,7 @@ model.logInUser = (email, password) => {
 	})
 }
 
+//not in use yet
 model.addStarredSnippet = (email, sid) => {
 	return connection.getUserCollection().then(db => {
 		return db.findByIdAndUpdate(email, { $push: { starred: sid } }, { new: true }).then(udata => { //{ select: starred }
@@ -127,8 +129,8 @@ model.addStarredSnippet = (email, sid) => {
 
 model.updateStarredInUser = (starred, email) => {
 	return connection.getUserCollection().then(db => {
-		return db.findByIdAndUpdate(email, { $set: { starred: starred } }, { select: starred }).then(starred => {
-			if (starred) return true;
+		return db.findByIdAndUpdate(email, { starred: starred }).then(retObj => {
+			if (retObj) return true;
 			else return null;
 		})
 	})
@@ -136,10 +138,20 @@ model.updateStarredInUser = (starred, email) => {
 
 model.updateCreatedInUser = (created, email) => {
 	return connection.getUserCollection().then(db => {
-		return db.findByIdAndUpdate(email, { $set: { created: created } }, { select: created }).then(created => {
-			if (created) return true;
+		return db.findByIdAndUpdate(email, { created: created }).then(retObj => {
+			if (retObj) return true;
 			else return null;
 		})
 	})
 }
+
+model.getRecentSnippets = () => {
+	return connection,getSnippetCollection().then(db => {
+		return db.aggregate([{$sort: {creationTime: -1}}, {$limit: 6}]).then(retList => {
+			if(retList) return retList;
+			else return null;
+		})
+	})
+}
+
 module.exports = model;

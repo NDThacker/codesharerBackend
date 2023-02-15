@@ -25,13 +25,13 @@ let userSchema = new Schema({
 }, { collection: 'Users' });
 
 connection.getUserCollection = () => {
-	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(conn => {
+	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false}).then(conn => {
 		return conn.model('Users', userSchema);
 	})
 }
 
 connection.getSnippetCollection = () => {
-	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(conn => {
+	return mongoose.connect(dbUrl, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false}).then(conn => {
 		return conn.model('CodeSnippet', snippetSchema);
 	})
 };
