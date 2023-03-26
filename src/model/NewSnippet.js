@@ -6,6 +6,11 @@ class NewSnippet {
 		this.author = obj.author;
 		this.createTime = new Date();
 		this.modifiedTime = new Date();
+		if(new Date(obj.expiryTime) < new Date())
+		{
+			let err = new Error("Invalid Expiry Date");
+			throw err;
+		}
 		this.expiryTime = new Date(obj.expiryTime);
 		// let months = obj.expiryTime.getMonth();
 		// months = months == 12 ? 1 : months + 1;
