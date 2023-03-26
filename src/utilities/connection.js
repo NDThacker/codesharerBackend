@@ -2,7 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 const connection = {};
-const dbUrl = 'mongodb://localhost:27017/snippetsdb';
+let dbUrl = "";
+if(process.env["NODE_ENV"] === "TEST")
+{
+	dbUrl = 'mongodb://localhost:27017/snippetsdbTEST';
+}
+else
+{
+	dbUrl = 'mongodb://localhost:27017/snippetsdb';
+}
+
 
 
 let snippetSchema = new Schema({
@@ -35,5 +44,22 @@ connection.getSnippetCollection = () => {
 		return conn.model('CodeSnippet', snippetSchema);
 	})
 };
+
+
+if(process.env["NODE_ENV"] === "TEST")
+{
+	connection.close = async() => {
+		await mongoose.disconnect();
+	};
+	connection.clearUsers = async() => {
+		await mongoose.connections[0].dropCollection("Users");
+
+	};
+	connection.clearSnippets = async() => {
+		await mongoose.connection.dropCollection("CodeSnippet");
+	
+	};
+	
+}
 
 module.exports = connection;

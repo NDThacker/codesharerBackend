@@ -28,11 +28,22 @@ service.addStarredSnippet = (email, sid) => {
 }
 
 service.submitSnippetToUser = (sid, email) => {
-	return model.submitSnippetToUser(sid, email).then(status => {
-		if(status) return status;
-		else {
-			let err = new Error("Can't submit new snippet");
-			err.status = 406;
+	return model.getSnippetById(sid).then(obj => {
+		if(obj && Object.keys(obj).length !== 0)
+		{
+			return model.submitSnippetToUser(sid, email).then(status => {
+				if(status) return status;
+				else {
+					let err = new Error("Can't submit new snippet");
+					err.status = 406;
+					throw err;
+				}
+			})
+		}
+		else
+		{
+			let err = new Error("No such Snippet found");
+			err.status = 404;
 			throw err;
 		}
 	})
@@ -92,7 +103,7 @@ service.updateStarredInUser = (starred, email) => {
 		if(status) return true;
 		else {
 			let error = new Error("Cannot update starred snippets");
-			error.status = 501;
+			error.status = 406;
 			throw error;
 		}
 	})
@@ -103,7 +114,7 @@ service.updateCreatedInUser = (created, email) => {
 		if(status) return true;
 		else {
 			let error = new Error("Cannot update created snippets");
-			error.status = 501;
+			error.status = 406;
 			throw error;
 		}
 	})

@@ -2,6 +2,7 @@ const { getSnippetCollection } = require('../utilities/connection');
 const connection = require('../utilities/connection');
 const NewSnippet = require('./NewSnippet');
 const NewUser = require('./NewUser');
+const ld = require("lodash")
 const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "by", "will", "is", "if"];
 
 function generateNewId() {
@@ -31,6 +32,9 @@ model.getSnippetById = (id) => {
 		return db.findById(id).then(sdata => {
 			return sdata;
 		})
+	}).catch(err => {
+		err.status = 404;
+		throw err;
 	})
 }
 
@@ -42,6 +46,9 @@ model.submitSnippet = (snp) => {
 			if (sdata) return sdata._id;
 			else return null;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -52,6 +59,9 @@ model.submitSnippetToUser = (sid, email) => {
 			if (udata) return true;
 			else return null;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -88,6 +98,9 @@ model.editSnippet = (sid, content) => {
 		return db.findByIdAndUpdate(sid, { $set: { modifiedTime: new Date(), content: content } }, { new: true }).then(sdata => {
 			return sdata;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -102,6 +115,10 @@ model.signUpUser = (User) => {
 
 			else return null;
 		})
+	}).catch(err => {
+		err.message = "Cannot sign up";
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -109,7 +126,8 @@ model.logInUser = (email, password) => {
 	return connection.getUserCollection().then(db => {
 		return db.findById(email).then(udata => {
 			if (udata && udata.password == password) {
-				udata.password = "______";
+				udata.password = null;
+				// let newUdata = ld.omit(udata, "password"); not able to remove 'password' key, DONT KNOW WHY?!
 				return udata;
 			}
 			else return null;
@@ -124,6 +142,9 @@ model.addStarredSnippet = (email, sid) => {
 			if (udata) return udata.starred;
 			else return null;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -133,6 +154,9 @@ model.updateStarredInUser = (starred, email) => {
 			if (retObj) return true;
 			else return null;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
@@ -142,11 +166,14 @@ model.updateCreatedInUser = (created, email) => {
 			if (retObj) return true;
 			else return null;
 		})
+	}).catch(err => {
+		err.status = 406;
+		throw err;
 	})
 }
 
 model.getRecentSnippets = () => {
-	return connection,getSnippetCollection().then(db => {
+	return connection.getSnippetCollection().then(db => {
 		return db.aggregate([{$sort: {creationTime: -1}}, {$limit: 6}]).then(retList => {
 			if(retList) return retList;
 			else return null;
@@ -155,3 +182,9 @@ model.getRecentSnippets = () => {
 }
 
 module.exports = model;
+
+if(process.env["NODE_ENV"] === "TEST") 
+{
+	module.exports.generateNewId = generateNewId;
+	module.exports.searchByPhrase = searchByPhrase;
+}

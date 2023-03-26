@@ -10,7 +10,7 @@ function errorlogger(err, req, res, next) {
 		// res.statusCode = err.status;
 	}
 	else {
-		res.status = 500;
+		res.status(500);
 	}
 	res.json({ "error" : err.message });
 }
