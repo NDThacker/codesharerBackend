@@ -56,7 +56,7 @@ describe("Testing db connection", () => {
 describe("Testing sign up and login", () => {
 	test("should insert single user details", async() => {
 		expect(await model.signUpUser(usersList[3])).toEqual(true);
-		expect(await model.signUpUser(usersList)).not.toEqual(true);
+		await expect(model.signUpUser(usersList)).rejects.toThrow('Cannot sign up')
 		await connection.clearUsers();
 
 	})
@@ -79,6 +79,34 @@ describe("Testing Snippet submission", () => {
 		await connection.clearUsers();
 		await connection.clearSnippets();
 		connection.close();
+
+	})
+})
+
+describe("Testing Updates for starred and created", () => {
+	test("should update starred and created array correctly", async() => {
+		expect(await model.signUpUser(usersList[9])).toEqual(true);
+		let sid = await model.submitSnippet(snippetList[2]);
+		expect(typeof sid).toEqual("string");
+		expect(await model.updateCreatedInUser([sid], sampleEmail)).toEqual(true);
+		expect(await model.updateStarredInUser([sid], sampleEmail)).toEqual(true);
+		expect(await model.updateCreatedInUser([sid], "garbage")).toEqual(null);
+		expect(await model.updateStarredInUser([sid], "garbage")).toEqual(null);
+		await connection.clearUsers();
+		await connection.clearSnippets();
+		connection.close();
+
+	})
+})
+
+describe("Testing recent snippets", () => {
+	test("should return list of return snippets", async() => {
+		expect(await model.getRecentSnippets()).toBeNull();
+		expect(typeof await model.submitSnippet(snippetList[2])).toEqual("string");
+		expect(await model.getRecentSnippets()).not.toBeNull();
+		await connection.clearSnippets();
+		connection.close();
+		
 
 	})
 })
