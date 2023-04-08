@@ -175,7 +175,7 @@ model.updateCreatedInUser = (created, email) => {
 model.getRecentSnippets = () => {
 	return connection.getSnippetCollection().then(db => {
 		return db.aggregate([{$sort: {creationTime: -1}}, {$limit: 6}]).then(retList => {
-			if(retList) return retList;
+			if(retList.length) return retList;
 			else return null;
 		})
 	})
