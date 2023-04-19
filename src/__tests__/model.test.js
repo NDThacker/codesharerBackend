@@ -1,3 +1,4 @@
+/* eslint-env jest */
 const model = require("../model/model");
 const connection = require("../utilities/connection");
 const { faker } = require("@faker-js/faker");

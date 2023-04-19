@@ -1,8 +1,6 @@
-const { getSnippetCollection } = require('../utilities/connection');
 const connection = require('../utilities/connection');
 const NewSnippet = require('./NewSnippet');
 const NewUser = require('./NewUser');
-const ld = require("lodash")
 const stopWords = ["and", "of", "a", "an", "the", "this", "that", "but", "how", "what", "are", "been", "by", "will", "is", "if"];
 
 function generateNewId() {
@@ -11,6 +9,8 @@ function generateNewId() {
 	s = s.toString(36).replace('.', '');
 	return s;
 }
+
+
 
 async function searchByPhrase(phrase) {
 
@@ -74,9 +74,8 @@ model.searchSnippetByTitle = async (title) => {
 		title = title.replace(new RegExp(sword, 'gi'), ' ');
 	}
 	let phrases = title.split(' ');
-	console.log(phrases)
-	let addedRes = []
-	let newRes = []
+	let addedRes = [];
+	let newRes = [];
 	for (let phrase of phrases) {
 		newRes = await searchByPhrase(phrase);
 		newRes = newRes.filter(sp => {

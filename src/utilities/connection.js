@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
+const config = require("config");
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 const connection = {};
-let dbUrl = "";
+let dbUrl = '';
 if(process.env["NODE_ENV"] === "TEST")
 {
-	dbUrl = 'mongodb://localhost:27017/snippetsdbTEST';
+	dbUrl = 'mongodb+srv://' + config.get("test.user") + ":" + config.get("test.password") + "@" + config.get("test.host") + "/" + config.get("test.db") + "?retryWrites=true&w=majority";
 }
 else
 {
-	dbUrl = 'mongodb://localhost:27017/snippetsdb';
+	dbUrl = 'mongodb+srv://' + config.get("prod.user") + ":" + config.get("prod.password") + "@" + config.get("prod.host") + "/" + config.get("prod.db") + "?retryWrites=true&w=majority";
 }
 
 
@@ -45,12 +46,14 @@ connection.getSnippetCollection = () => {
 	})
 };
 
+connection.close = async() => {
+	await mongoose.disconnect();
+};
+
 
 if(process.env["NODE_ENV"] === "TEST")
 {
-	connection.close = async() => {
-		await mongoose.disconnect();
-	};
+	
 	connection.clearUsers = async() => {
 		await mongoose.connections[0].dropCollection("Users");
 
