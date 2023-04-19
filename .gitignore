@@ -1,3 +1,5 @@
 *-lock.json
 *.txt
 **/node_modules
+coverage/
+config/
