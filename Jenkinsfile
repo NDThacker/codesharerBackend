@@ -36,5 +36,24 @@ pipeline
 				sh 'npm test'
 			}
 		}
+		stage('Building docker image')
+		{
+			steps
+			{
+				sh 'docker build -t codesharerBackEndService .'
+			}
+		}
+		stage('Pushing Docker image to dockerhub')
+		{
+			steps
+			{
+				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')])
+				{
+					sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+					sh 'docker push codesharerBackEndService'
+
+				}
+			}
+		}
 	}
 }
