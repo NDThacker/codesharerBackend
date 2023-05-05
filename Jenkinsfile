@@ -36,24 +36,17 @@ pipeline
 				sh 'npm test'
 			}
 		}
-		stage('Building docker image')
+		stage('Build image') 
 		{
-			steps
-			{
-				sh 'docker build -t codesharerbackendservice .'
-			}
-		}
-		stage('Pushing Docker image to dockerhub')
+       		dockerImage = docker.build("codesharerbackendservice")
+    	}
+    
+ 		stage('Push image') 
 		{
-			steps
+        	withDockerRegistry([ credentialsId: "DockerCreds", url: "" ]) 
 			{
-				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')])
-				{
-					sh 'docker login -u $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD'
-					sh 'docker push codesharerbackendservice'
-
-				}
-			}
-		}
+        		dockerImage.push()
+        	}
+    	}    
 	}
 }
