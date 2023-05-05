@@ -12,20 +12,20 @@ pipeline
 			}
 		}
 
-		// stage('Copy config folders and files')
-		// {
-		// 	steps
-		// 	{
-		// 		fileOperations([folderCopyOperation(
-		// 				sourceFolderPath: '/app-configs/config'
-		// 				destinationFolderPath: './'
-		// 			)])
-		// 		fileOperations([folderCopyOperation(
-		// 				sourceFolderPath: '/app-configs/config'
-		// 				destinationFolderPath: './src/'
-		// 			)])
-		// 	}
-		// }
+		stage('Copy config folders and files')
+		{
+			steps
+			{
+				fileOperations([folderCopyOperation(
+						sourceFolderPath: '/app-configs/config',
+						destinationFolderPath: './'
+					)])
+				fileOperations([folderCopyOperation(
+						sourceFolderPath: '/app-configs/config',
+						destinationFolderPath: './src/'
+					)])
+			}
+		}
 		// stage('Backend Tests') 
 		// {
 		// 	steps 
