@@ -26,13 +26,13 @@ pipeline
 					)])
 			}
 		}
-		// stage('Backend Tests') 
-		// {
-		// 	steps 
-		// 	{
-		// 		sh 'npm install'
-		// 		sh 'npm test'
-		// 	}
-		// }
+		stage('Backend Tests') 
+		{
+			steps 
+			{
+				sh 'npm install'
+				sh 'npm test'
+			}
+		}
 	}
 }
