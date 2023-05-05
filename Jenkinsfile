@@ -38,15 +38,22 @@ pipeline
 		}
 		stage('Build image') 
 		{
-       		dockerImage = docker.build("codesharerbackendservice")
+			steps
+			{
+       			dockerImage = docker.build("codesharerbackendservice")
+			}
     	}
     
  		stage('Push image') 
 		{
-        	withDockerRegistry([ credentialsId: "DockerCreds", url: "" ]) 
+			steps
 			{
-        		dockerImage.push()
-        	}
-    	}    
+				withDockerRegistry([ credentialsId: "DockerCreds", url: "" ]) 
+				{
+        			dockerImage.push()
+        		}
+			}
+        	
+    	}
 	}
 }
