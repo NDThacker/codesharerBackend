@@ -40,7 +40,7 @@ pipeline
 		{
 			steps
 			{
-				sh 'docker build -t codesharerBackEndService .'
+				sh 'docker build -t codesharerbackendservice .'
 			}
 		}
 		stage('Pushing Docker image to dockerhub')
@@ -50,7 +50,7 @@ pipeline
 				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')])
 				{
 					sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-					sh 'docker push codesharerBackEndService'
+					sh 'docker push codesharerbackendservice'
 
 				}
 			}
