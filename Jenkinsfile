@@ -17,11 +17,11 @@ pipeline
 			steps
 			{
 				fileOperations([folderCopyOperation(
-						sourceFolderPath: '/app-configs/config',
+						sourceFolderPath: '/app-configs/**',
 						destinationFolderPath: './'
 					)])
 				fileOperations([folderCopyOperation(
-						sourceFolderPath: '/app-configs/config',
+						sourceFolderPath: '/app-configs/**',
 						destinationFolderPath: './src/'
 					)])
 			}
