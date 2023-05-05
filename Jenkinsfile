@@ -12,27 +12,29 @@ pipeline
 			}
 		}
 
-		// stage('Copy config folders and files')
-		// {
-		// 	steps
-		// 	{
-		// 		fileOperations([folderCopyOperation(
-		// 				sourceFolderPath: '/app-configs/config'
-		// 				destinationFolderPath: './'
-		// 			)])
-		// 		fileOperations([folderCopyOperation(
-		// 				sourceFolderPath: '/app-configs/config'
-		// 				destinationFolderPath: './src/'
-		// 			)])
-		// 	}
-		// }
-		// stage('Backend Tests') 
-		// {
-		// 	steps 
-		// 	{
-		// 		sh 'npm install'
-		// 		sh 'npm test'
-		// 	}
-		// }
+		stage('Copy config folders and files')
+		{
+			steps
+			{
+				fileOperations([folderCreateOperation(folderPath: './config')]);
+				fileOperations([folderCreateOperation(folderPath: './src/config')]);
+				fileOperations([folderCopyOperation(
+						sourceFolderPath: '/app-configs/config',
+						destinationFolderPath: './config'
+					)])
+				fileOperations([folderCopyOperation(
+						sourceFolderPath: '/app-configs/config',
+						destinationFolderPath: './src/config'
+					)])
+			}
+		}
+		stage('Backend Tests') 
+		{
+			steps 
+			{
+				sh 'npm install'
+				sh 'npm test'
+			}
+		}
 	}
 }
