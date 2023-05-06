@@ -40,7 +40,7 @@ pipeline
 		{
 			steps
 			{
-       			dockerImage = docker.build("codesharerbackendservice")
+       			sh 'docker build -t codesharerbackend .'
 			}
     	}
     
@@ -48,10 +48,11 @@ pipeline
 		{
 			steps
 			{
-				withDockerRegistry([ credentialsId: "DockerCreds", url: "" ]) 
+				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) 
 				{
-        			dockerImage.push()
-        		}
+					sh 'docker login -u $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD'
+					sh 'docker push codesharerbackend'
+				}
 			}
         	
     	}
