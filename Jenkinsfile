@@ -40,7 +40,7 @@ pipeline
 		{
 			steps
 			{
-       			sh 'docker build -t namant98/codesharerbackend .'
+       			sh 'docker build -t namant98/codesharerfullstack:backend .'
 			}
     	}
     
@@ -51,7 +51,7 @@ pipeline
 				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) 
 				{
 					sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-					sh 'docker push namant98/codesharerbackend'
+					sh 'docker push namant98/codesharerfullstack:backend'
 				}
 			}
         	
