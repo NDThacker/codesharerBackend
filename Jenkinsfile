@@ -51,7 +51,7 @@ pipeline
 				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) 
 				{
 					sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-					sh 'docker push codesharerbackend'
+					sh 'docker push namant98/codesharerbackend'
 				}
 			}
         	
