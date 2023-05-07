@@ -40,7 +40,7 @@ pipeline
 		{
 			steps
 			{
-       			sh 'docker build -t codesharerbackend .'
+       			sh 'docker build -t namant98/codesharerbackend .'
 			}
     	}
     
