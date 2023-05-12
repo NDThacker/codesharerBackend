@@ -36,13 +36,14 @@ pipeline
 				sh 'npm test'
 			}
 		}
+
 		stage('Build image') 
 		{
 			steps
 			{
        			sh 'docker build -t namant98/codesharerfullstack:backend .'
 			}
-    	}
+    }
     
  		stage('Push image') 
 		{
@@ -53,8 +54,7 @@ pipeline
 					sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
 					sh 'docker push namant98/codesharerfullstack:backend'
 				}
-			}
-        	
-    	}
-	}
+			}      	
+    }
+  }
 }
