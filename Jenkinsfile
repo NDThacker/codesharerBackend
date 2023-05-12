@@ -36,5 +36,25 @@ pipeline
 				sh 'npm test'
 			}
 		}
-	}
+
+		stage('Build image') 
+		{
+			steps
+			{
+       			sh 'docker build -t namant98/codesharerfullstack:backend .'
+			}
+    }
+    
+ 		stage('Push image') 
+		{
+			steps
+			{
+				withCredentials([usernamePassword(credentialsId: 'DockerCreds', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) 
+				{
+					sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+					sh 'docker push namant98/codesharerfullstack:backend'
+				}
+			}      	
+    }
+  }
 }
